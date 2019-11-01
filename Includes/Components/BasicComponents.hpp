@@ -2,6 +2,7 @@
 #define BASIC_COMPONENTS_HPP
 
 #include <string>
+#include <cmath>
 
 #include <SFML/Graphics.hpp>
 
@@ -32,6 +33,29 @@ struct UnsignedInt: public AbstractComponent {
 
 	unsigned int value;          
 };
+
+struct Integer: public AbstractComponent {
+
+	Integer(): value{0} {}
+
+	Integer(const int val): value{val} {}
+
+	virtual std::shared_ptr<AbstractComponent> clone() const { return std::static_pointer_cast<AbstractComponent>(std::make_shared<Integer>(*this)); }
+
+	int value;          
+};
+
+struct Float: public AbstractComponent {
+
+	Float(): value{0.f} {}
+
+	Float(const float val): value{val} {}
+
+	virtual std::shared_ptr<AbstractComponent> clone() const { return std::static_pointer_cast<AbstractComponent>(std::make_shared<Float>(*this)); }
+
+	float value;          
+};
+
 
 struct EntityComponent: public AbstractComponent {
 

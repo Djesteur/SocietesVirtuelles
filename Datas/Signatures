@@ -1,4 +1,12 @@
 Hunger
+HungerDecrease
 Thirst
+ThirstDecrease
 Death
+DeathDecrease
 Reproduction
+ReproductionDecrease
+Position
+MaxSpeed
+CurrentSpeed
+Sprite
