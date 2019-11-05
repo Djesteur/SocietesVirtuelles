@@ -13,6 +13,8 @@
 
 #include "Systems/AnimalsIA.hpp"
 
+#include "EngineRequest.hpp"
+
 
 int main() {
 
@@ -34,7 +36,7 @@ int main() {
 
 		allAnimals.emplace_back(beginAnimal);
 
-		for(unsigned int i{0}; i < 9; i++) {
+		for(unsigned int i{0}; i < 14; i++) {
 
 			allAnimals.emplace_back(engine.cloneEntity(beginAnimal));
 		}
@@ -44,7 +46,7 @@ int main() {
 		Gg::Entity firstGrass{createGrass(engine)};
 		ressources.emplace_back(firstGrass);
 
-		for(unsigned int i{0}; i < 3; i++) {
+		for(unsigned int i{0}; i < 5; i++) {
 
 			ressources.emplace_back(engine.cloneEntity(firstGrass));
 		}
@@ -83,7 +85,7 @@ int main() {
 
 		std::vector<Gg::Entity> deadAnimals;
 
-		const float nbUpdatePerSecond{10.f};
+		const float nbUpdatePerSecond{20.f};
 		const float timeBeetweenUpdate{1'000'000.f/nbUpdatePerSecond};
 
 		sf::Time elapsedTime;
@@ -117,6 +119,7 @@ int main() {
 
 					drawSystem.deleteEntity(currentEntity); 
 					animalsStatesUpdates.deleteEntity(currentEntity);
+					ia.deleteEntity(currentEntity);
 					engine.deleteEntity(currentEntity);
 				}
 

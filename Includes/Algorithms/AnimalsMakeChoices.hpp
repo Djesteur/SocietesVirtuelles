@@ -7,6 +7,8 @@
 #include "Components/IAChoice.hpp"
 #include "Components/FSM.hpp"
 
+#include "EngineRequest.hpp"
+
 class AnimalsMakeChoices: public Gg::Algorithm::AbstractAlgorithm {
 
 	public:
@@ -18,6 +20,8 @@ class AnimalsMakeChoices: public Gg::Algorithm::AbstractAlgorithm {
 		void apply(); 
 
 	protected:
+
+		EngineRequest m_request;
 
 };
 

@@ -9,6 +9,7 @@
 
 #include "Components/BasicComponents.hpp"
 #include "Components/Graphics/Sprite.hpp"
+
 #include "Components/IAChoice.hpp"
 #include "Components/FSM.hpp"
 

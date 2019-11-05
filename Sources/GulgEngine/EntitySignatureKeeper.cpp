@@ -54,4 +54,14 @@ Signature EntitySignatureKeeper::getSignature(const Entity entity) const {
 	return Signature{};
 }
 
+std::vector<Entity> EntitySignatureKeeper::getAllEntities() const {
+
+	std::vector<Entity> result;
+	result.reserve(m_signatures.size());
+
+	for(const std::pair<Entity, Signature> &currentPair: m_signatures) { result.emplace_back(currentPair.first); }
+
+	return result;
+}
+
 }

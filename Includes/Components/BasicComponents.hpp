@@ -82,6 +82,7 @@ struct String: public AbstractComponent {
 struct Vector2D: public AbstractComponent {
 
 	Vector2D(): value{0.f, 0.f} {}
+	Vector2D(sf::Vector2f v): value{v} {}
 	Vector2D(const float x, const float y): value{x, y} {}
 	Vector2D(const Vector2D &vec): value{vec.value} {}
 

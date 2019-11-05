@@ -40,6 +40,8 @@ class GulgEngine {
 
 		Entity cloneEntity(const Entity entityToClone);
 
+		std::vector<Entity> getAllEntities() const;
+
 	private:
 
 		void checkSignatureLoad() const;

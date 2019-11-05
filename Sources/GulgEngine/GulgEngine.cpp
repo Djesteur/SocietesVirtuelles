@@ -97,4 +97,6 @@ Entity GulgEngine::cloneEntity(const Entity entityToClone) {
 	return newEntity;
 }
 
+std::vector<Entity> GulgEngine::getAllEntities() const { return m_entitySignatureKeeper.getAllEntities(); }
+
 }

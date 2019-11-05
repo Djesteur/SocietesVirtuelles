@@ -44,8 +44,8 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	std::shared_ptr<Gg::Component::Vector2D> position{std::make_shared<Gg::Component::Vector2D>(0.f, 0.f)};
 	engine.addComponentToEntity(newEntity, "Position", std::static_pointer_cast<Gg::Component::AbstractComponent>(position));
 
-	std::shared_ptr<Gg::Component::Float> maxSpeed{std::make_shared<Gg::Component::Float>(1.f)};
-	engine.addComponentToEntity(newEntity, "MaxSpeed", std::static_pointer_cast<Gg::Component::AbstractComponent>(hunger));
+	std::shared_ptr<Gg::Component::Float> maxSpeed{std::make_shared<Gg::Component::Float>(5.f)};
+	engine.addComponentToEntity(newEntity, "MaxSpeed", std::static_pointer_cast<Gg::Component::AbstractComponent>(maxSpeed));
 
 	std::shared_ptr<Gg::Component::Vector2D> currentSpeed{std::make_shared<Gg::Component::Vector2D>(0.f, 0.f)};
 	engine.addComponentToEntity(newEntity, "CurrentSpeed", std::static_pointer_cast<Gg::Component::AbstractComponent>(currentSpeed));
@@ -65,7 +65,75 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	std::shared_ptr<IAChoice> iaChoice{std::make_shared<IAChoice>()};
 	engine.addComponentToEntity(newEntity, "AnimalChoice", std::static_pointer_cast<Gg::Component::AbstractComponent>(iaChoice));
 
+
+
+	Node eatBegin{};
+	eatBegin.nextState = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<Gg::Entity> food{request.getNeareastAgentType(myself, 1)};
+		if(food.empty()) { return 1; }
+
+		if(request.distanceBetweenAgent(myself, food[0]) > 1.f) { return 2; }
+
+		return 3;
+	};
+
+	Node searchForFood{};
+	searchForFood.nextState = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<Gg::Entity> food{request.getNeareastAgentType(myself, 1)};
+		if(food.empty()) { return 1; }
+
+		return 2;
+	};
+
+	searchForFood.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::Move;
+		currentChoice.target = Gg::NoEntity;
+
+		return currentChoice;
+	};
+
+	Node goToFood{};
+	goToFood.nextState = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<Gg::Entity> food{request.getNeareastAgentType(myself, 1)};
+		if(request.distanceBetweenAgent(myself, food[0]) > 5.f) { return 2; }
+
+		return 3;
+	};
+
+	goToFood.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::Move;
+		currentChoice.target = request.getNeareastAgentType(myself, 1)[0];
+
+		return currentChoice;
+	};
+
+	Node eating{};
+	eating.nextState = [](Gg::Entity myself, EngineRequest &request) { return 3; };
+	eating.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::Eat;
+		currentChoice.target = request.getNeareastAgentType(myself, 1)[0];
+
+		return currentChoice;
+	};
+
+	Mode eatMode{0};
+	eatMode.addNode(eatBegin);
+	eatMode.addNode(searchForFood);
+	eatMode.addNode(goToFood);
+	eatMode.addNode(eating);
+
+
 	std::shared_ptr<FSM> fsm{std::make_shared<FSM>()};
+	fsm->addMode(eatMode);
 	engine.addComponentToEntity(newEntity, "FSM", std::static_pointer_cast<Gg::Component::AbstractComponent>(fsm));
 
 

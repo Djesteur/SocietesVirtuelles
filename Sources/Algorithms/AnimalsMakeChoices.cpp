@@ -1,6 +1,8 @@
 #include "Algorithms/AnimalsMakeChoices.hpp"
 
-AnimalsMakeChoices::AnimalsMakeChoices(Gg::GulgEngine &gulgEngine): AbstractAlgorithm{gulgEngine} {
+AnimalsMakeChoices::AnimalsMakeChoices(Gg::GulgEngine &gulgEngine): 
+	AbstractAlgorithm{gulgEngine},
+	m_request{gulgEngine} {
 
 	m_signature = gulgEngine.getComponentSignature("AgentType");
 	m_signature += gulgEngine.getComponentSignature("Hunger");
@@ -27,6 +29,6 @@ void AnimalsMakeChoices::apply() {
 			std::static_pointer_cast<IAChoice>(m_gulgEngine.getComponent(currentEntity, "AnimalChoice"))
 		};
 
-		*choice = fsm->makeChoice();
+		*choice = fsm->makeChoice(currentEntity, m_request);
 	}
 }

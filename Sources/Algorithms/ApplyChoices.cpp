@@ -7,6 +7,8 @@ ApplyChoices::ApplyChoices(Gg::GulgEngine &gulgEngine): AbstractAlgorithm{gulgEn
 	m_signature += gulgEngine.getComponentSignature("Death");
 	m_signature += gulgEngine.getComponentSignature("Reproduction");
 	m_signature += gulgEngine.getComponentSignature("Position");
+	m_signature += gulgEngine.getComponentSignature("CurrentSpeed");
+	m_signature += gulgEngine.getComponentSignature("MaxSpeed");
 	m_signature += gulgEngine.getComponentSignature("AnimalChoice");
 }
 
@@ -24,12 +26,31 @@ void ApplyChoices::apply() {
 			std::static_pointer_cast<Gg::Component::Vector2D>(m_gulgEngine.getComponent(currentEntity, "Position"))
 		};
 
+
 		if(choice->choice == Choice::Move) {
 
 			std::shared_ptr<Gg::Component::Vector2D> currentSpeed{ 
 				std::static_pointer_cast<Gg::Component::Vector2D>(m_gulgEngine.getComponent(currentEntity, "CurrentSpeed"))
 			};
 
+
+			if(choice->target == Gg::NoEntity) { currentSpeed->value = sf::Vector2f{-1.f, 0.f}; }
+			else {
+
+				std::shared_ptr<Gg::Component::Vector2D> targetPos{ 
+					std::static_pointer_cast<Gg::Component::Vector2D>(m_gulgEngine.getComponent(choice->target, "Position"))
+				};
+
+				currentSpeed->value = targetPos->value - position->value;
+				currentSpeed->value /= currentSpeed->norm();
+			}
+
+
+			std::shared_ptr<Gg::Component::Float> maxSpeed{ 
+				std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "MaxSpeed"))
+			};
+
+			currentSpeed->value *= maxSpeed->value;
 			position->value += currentSpeed->value;
 
 		}
@@ -43,8 +64,13 @@ void ApplyChoices::apply() {
 			std::shared_ptr<Gg::Component::Vector2D> targetPosition{ 
 				std::static_pointer_cast<Gg::Component::Vector2D>(m_gulgEngine.getComponent(choice->target, "Position"))
 			};
+
+			std::shared_ptr<Gg::Component::Float> maxSpeed{ 
+				std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "MaxSpeed"))
+			};
+
 				
-			if(targetType->value == 1 && Gg::Maths::distance(*position, *targetPosition) < 1.f) { 
+			if(targetType->value == 1 && Gg::Maths::distance(*position, *targetPosition) < maxSpeed->value) { 
 
 				std::shared_ptr<Gg::Component::Float> hunger{ 
 					std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Hunger"))

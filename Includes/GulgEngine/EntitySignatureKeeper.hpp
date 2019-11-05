@@ -29,6 +29,8 @@ class EntitySignatureKeeper {
 		
 		Signature getSignature(const Entity entity) const;
 
+		std::vector<Entity> getAllEntities() const;
+
 	private:
 
 		std::map<Entity, Signature> m_signatures;
