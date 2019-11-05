@@ -4,7 +4,9 @@
 #include <SFML/Graphics.hpp>
 
 #include "Systems/AbstractSystem.hpp"
+
 #include "Algorithms/Graphics/DrawSprite.hpp"
+#include "Algorithms/Graphics/SynchronizePositions.hpp"
 
 class AgentDraw: public Gg::Systems::AbstractSystem {
 

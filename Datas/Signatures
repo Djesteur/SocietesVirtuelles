@@ -1,3 +1,4 @@
+AgentType
 Hunger
 HungerDecrease
 Thirst
@@ -7,6 +8,9 @@ DeathDecrease
 Reproduction
 ReproductionDecrease
 Position
-MaxSpeed
 CurrentSpeed
+MaxSpeed
+ViewRadius
 Sprite
+AnimalChoice
+FSM

@@ -9,9 +9,14 @@
 
 #include "Components/BasicComponents.hpp"
 #include "Components/Graphics/Sprite.hpp"
+#include "Components/IAChoice.hpp"
+#include "Components/FSM.hpp"
 
 Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine);
 
-void randomPositionForAnimals(Gg::GulgEngine &engine, std::vector<Gg::Entity> animals, sf::FloatRect rectangle);
+Gg::Entity createGrass(Gg::GulgEngine &engine);
+Gg::Entity createWater(Gg::GulgEngine &engine);
+
+void randomPositionForAgents(Gg::GulgEngine &engine, std::vector<Gg::Entity> animals, sf::FloatRect rectangle);
 
 #endif
