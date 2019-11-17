@@ -22,6 +22,8 @@ class EngineRequest {
 		bool isUnderThirstThreshold(const Gg::Entity asker);
 		bool canReproduce(const Gg::Entity agent);
 
+		float entityHitboxSize(const Gg::Entity agent);
+
 	protected:
 
 		Gg::GulgEngine &m_engine;      

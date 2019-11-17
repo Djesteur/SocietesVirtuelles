@@ -6,6 +6,8 @@
 #include "Algorithms/NeedsUpdates.hpp"
 #include "Algorithms/CheckDeath.hpp"
 
+#include "Algorithms/StatsAlgo.hpp"
+
 class Statistics: public Gg::Systems::AbstractSystem {
 
 	public:

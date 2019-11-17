@@ -100,7 +100,8 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	goToFood.nextState = [](Gg::Entity myself, EngineRequest &request) {
 
 		std::vector<Gg::Entity> food{request.getNeareastAgentType(myself, 1)};
-		if(request.distanceBetweenAgent(myself, food[0]) > 5.f) { return 2; }
+		if(food.empty()) { return 1;}
+		else if(request.distanceBetweenAgent(myself, food[0]) > 5.f) { return 2; }
 
 		return 3;
 	};
@@ -139,8 +140,7 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 
 		std::vector<Gg::Entity> water{request.getNeareastAgentType(myself, 2)};
 		if(water.empty()) { return 1; }
-
-		if(request.distanceBetweenAgent(myself, water[0]) > 1.f) { return 2; }
+		else if(request.distanceBetweenAgent(myself, water[0]) > 1.f) { return 2; }
 
 		return 3;
 	};
@@ -167,7 +167,8 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	goToWater.nextState = [](Gg::Entity myself, EngineRequest &request) {
 
 		std::vector<Gg::Entity> water{request.getNeareastAgentType(myself, 2)};
-		if(request.distanceBetweenAgent(myself, water[0]) > 5.f) { return 2; }
+		if(water.empty()) { return 1; }
+		else if(request.distanceBetweenAgent(myself, water[0]) > request.entityHitboxSize(myself)) { return 2; }
 
 		return 3;
 	};
@@ -220,7 +221,7 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 		std::vector<Gg::Entity> partners{request.getPartners(myself)};
 		if(partners.empty()) { return 1; }
 
-		if(request.distanceBetweenAgent(myself, partners[0]) > 5.f) { return 2; }
+		if(request.distanceBetweenAgent(myself, partners[0]) > request.entityHitboxSize(myself)) { return 2; }
 
 		return 3;
 	};
@@ -248,7 +249,7 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 
 		std::vector<Gg::Entity> partners{request.getPartners(myself)};
 		if(partners.empty()) { return 1; }
-		else if(request.distanceBetweenAgent(myself, partners[0]) > 5.f) { return 2; }
+		else if(request.distanceBetweenAgent(myself, partners[0]) > request.entityHitboxSize(myself)) { return 2; }
 
 		return 3;
 	};
@@ -376,3 +377,171 @@ void randomPositionForAgents(Gg::GulgEngine &engine, std::vector<Gg::Entity> age
 		sprite->sprite.setPosition(position->value);
     }
 }
+
+Gg::Entity reproduction(Gg::GulgEngine &engine, const Gg::Entity animal1, const Gg::Entity animal2) {
+
+	Gg::Entity newAnimal{engine.cloneEntity(animal1)};
+
+	std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "Hunger"))->value = 100.f;
+	std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "Thirst"))->value = 100.f;
+	std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "Death"))->value = 100.f;
+	std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "Reproduction"))->value = 100.f;
+
+    std::default_random_engine randomEngine { static_cast<long unsigned int>(std::time(nullptr)) };
+    std::uniform_int_distribution<unsigned int> chooseLegacy{1, 2};
+    std::uniform_real_distribution<float> spontaneousMutationChance{0, 1}, spontaneousMutationRatio{-0.2f, 0.2f};
+
+    std::shared_ptr<Gg::Component::Float> hungerDecreaseNew{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "HungerDecrease"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> hungerDecrease1{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal1, "HungerDecrease"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> hungerDecrease2{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal2, "HungerDecrease"))
+	};
+
+	if(chooseLegacy(randomEngine) == 1) { hungerDecreaseNew->value = hungerDecrease1->value; }
+	else { hungerDecreaseNew->value = hungerDecrease2->value; }
+
+	if(spontaneousMutationChance(randomEngine) <= 0.15f) { hungerDecreaseNew->value *= spontaneousMutationRatio(randomEngine); }
+
+
+
+
+
+
+
+	std::shared_ptr<Gg::Component::Float> thirstDecreaseNew{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "ThirstDecrease"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> thirstDecrease1{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal1, "ThirstDecrease"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> thirstDecrease2{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal2, "ThirstDecrease"))
+	};
+
+	if(chooseLegacy(randomEngine) == 1) { thirstDecreaseNew->value = thirstDecrease1->value; }
+	else { thirstDecreaseNew->value = thirstDecrease2->value; }
+
+	if(spontaneousMutationChance(randomEngine) <= 0.15f) { thirstDecreaseNew->value *= spontaneousMutationRatio(randomEngine); }
+
+
+
+
+
+
+
+
+
+
+	std::shared_ptr<Gg::Component::Float> deathDecreaseNew{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "DeathDecrease"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> deathDecrease1{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal1, "DeathDecrease"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> deathDecrease2{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal2, "DeathDecrease"))
+	};
+
+	if(chooseLegacy(randomEngine) == 1) { deathDecreaseNew->value = deathDecrease1->value; }
+	else { deathDecreaseNew->value = deathDecrease2->value; }
+
+	if(spontaneousMutationChance(randomEngine) <= 0.15f) { deathDecreaseNew->value *= spontaneousMutationRatio(randomEngine); }
+
+
+
+
+
+
+
+
+	std::shared_ptr<Gg::Component::Float> reproductionDecreaseNew{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "ReproductionDecrease"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> reproductionDecrease1{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal1, "ReproductionDecrease"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> reproductionDecrease2{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal2, "ReproductionDecrease"))
+	};
+
+	if(chooseLegacy(randomEngine) == 1) { reproductionDecreaseNew->value = reproductionDecrease1->value; }
+	else { reproductionDecreaseNew->value = reproductionDecrease2->value; }
+
+	if(spontaneousMutationChance(randomEngine) <= 0.15f) { reproductionDecreaseNew->value *= spontaneousMutationRatio(randomEngine); }
+
+
+
+
+
+
+	std::shared_ptr<Gg::Component::Float> speedNew{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "MaxSpeed"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> speed1{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal1, "MaxSpeed"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> speed2{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal2, "MaxSpeed"))
+	};
+
+	if(chooseLegacy(randomEngine) == 1) { speedNew->value = speed1->value; }
+	else { speedNew->value = speed2->value; }
+
+	if(spontaneousMutationChance(randomEngine) <= 0.15f) { speedNew->value *= spontaneousMutationRatio(randomEngine); }
+
+
+
+
+
+
+	std::shared_ptr<Gg::Component::Float> viewNew{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "ViewRadius"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> view1{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal1, "ViewRadius"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> view2{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal2, "ViewRadius"))
+	};
+
+	if(chooseLegacy(randomEngine) == 1) { viewNew->value = view1->value; }
+	else { viewNew->value = view2->value; }
+
+	if(spontaneousMutationChance(randomEngine) <= 0.15f) { viewNew->value *= spontaneousMutationRatio(randomEngine); }
+
+
+
+
+	return newAnimal;
+}
+
+/*
+std::shared_ptr<Gg::Component::Float> maxSpeed{std::make_shared<Gg::Component::Float>(5.f)};
+	engine.addComponentToEntity(newEntity, "MaxSpeed", std::static_pointer_cast<Gg::Component::AbstractComponent>(maxSpeed));
+
+
+std::shared_ptr<Gg::Component::Float> viewRadius{std::make_shared<Gg::Component::Float>(100.f)};
+	engine.addComponentToEntity(newEntity, "ViewRadius", std::static_pointer_cast<Gg::Component::AbstractComponent>(viewRadius));
+
+
+
+
+
+
+*/

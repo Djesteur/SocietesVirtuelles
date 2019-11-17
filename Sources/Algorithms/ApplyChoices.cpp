@@ -164,6 +164,6 @@ void ApplyChoices::apply() {
 		if(position->value.x > 800.f) { position->value.x = 0.f; }
 		if(position->value.x < 0.f) { position->value.x = 800.f; }
 		if(position->value.y > 800.f) { position->value.y = 0.f; }
-		if(position->value.x < 0.f) { position->value.y = 800.f; }
+		if(position->value.y < 0.f) { position->value.y = 800.f; }
 	}
 }

@@ -20,4 +20,6 @@ Gg::Entity createWater(Gg::GulgEngine &engine);
 
 void randomPositionForAgents(Gg::GulgEngine &engine, std::vector<Gg::Entity> animals, sf::FloatRect rectangle);
 
+Gg::Entity reproduction(Gg::GulgEngine &engine, const Gg::Entity animal1, const Gg::Entity animal2);
+
 #endif

@@ -119,3 +119,14 @@ bool EngineRequest::canReproduce(const Gg::Entity agent) {
 
 	return false;
 }
+
+float EngineRequest::entityHitboxSize(const Gg::Entity agent) {
+
+	std::shared_ptr<Gg::Component::UnsignedInt> entityType{ 
+		std::static_pointer_cast<Gg::Component::UnsignedInt>(m_engine.getComponent(agent, "AgentType"))
+	};
+
+	if(entityType->value == 0) { return std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(agent, "MaxSpeed"))->value; }
+	else { return 2.f; }
+
+}
