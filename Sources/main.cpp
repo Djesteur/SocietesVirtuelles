@@ -46,7 +46,7 @@ int main() {
 		Gg::Entity firstGrass{createGrass(engine)};
 		ressources.emplace_back(firstGrass);
 
-		for(unsigned int i{0}; i < 5; i++) {
+		for(unsigned int i{0}; i < 7; i++) {
 
 			ressources.emplace_back(engine.cloneEntity(firstGrass));
 		}
@@ -54,7 +54,7 @@ int main() {
 		Gg::Entity firstWater{createWater(engine)};
 		ressources.emplace_back(firstWater);
 
-		for(unsigned int i{0}; i < 3; i++) {
+		for(unsigned int i{0}; i < 7; i++) {
 
 			ressources.emplace_back(engine.cloneEntity(firstWater));
 		}

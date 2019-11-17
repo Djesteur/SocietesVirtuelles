@@ -9,10 +9,10 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	engine.addComponentToEntity(newEntity, "AgentType", std::static_pointer_cast<Gg::Component::AbstractComponent>(agentType));
 
 
-	std::shared_ptr<Gg::Component::Float> hunger{std::make_shared<Gg::Component::Float>(50.f)};
+	std::shared_ptr<Gg::Component::Float> hunger{std::make_shared<Gg::Component::Float>(80.f)};
 	engine.addComponentToEntity(newEntity, "Hunger", std::static_pointer_cast<Gg::Component::AbstractComponent>(hunger));
 
-	std::shared_ptr<Gg::Component::Float> hungerDecrease{std::make_shared<Gg::Component::Float>(1.f)};
+	std::shared_ptr<Gg::Component::Float> hungerDecrease{std::make_shared<Gg::Component::Float>(0.5f)};
 	engine.addComponentToEntity(newEntity, "HungerDecrease", std::static_pointer_cast<Gg::Component::AbstractComponent>(hungerDecrease));
 
 
@@ -20,7 +20,7 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	std::shared_ptr<Gg::Component::Float> thirst{std::make_shared<Gg::Component::Float>(50.f)};
 	engine.addComponentToEntity(newEntity, "Thirst", std::static_pointer_cast<Gg::Component::AbstractComponent>(thirst));
 
-	std::shared_ptr<Gg::Component::Float> thirstDecrease{std::make_shared<Gg::Component::Float>(1.f)};
+	std::shared_ptr<Gg::Component::Float> thirstDecrease{std::make_shared<Gg::Component::Float>(0.5f)};
 	engine.addComponentToEntity(newEntity, "ThirstDecrease", std::static_pointer_cast<Gg::Component::AbstractComponent>(thirstDecrease));
 
 
@@ -90,7 +90,7 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	searchForFood.getAction = [](Gg::Entity myself, EngineRequest &request) {
 
 		IAChoice currentChoice;
-		currentChoice.choice = Choice::Move;
+		currentChoice.choice = Choice::RandomMove;
 		currentChoice.target = Gg::NoEntity;
 
 		return currentChoice;
@@ -132,8 +132,95 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	eatMode.addNode(eating);
 
 
+
+
+	Node drinkBegin{};
+	drinkBegin.nextState = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<Gg::Entity> water{request.getNeareastAgentType(myself, 2)};
+		if(water.empty()) { return 1; }
+
+		if(request.distanceBetweenAgent(myself, water[0]) > 1.f) { return 2; }
+
+		return 3;
+	};
+
+	Node searchForWater{};
+	searchForWater.nextState = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<Gg::Entity> water{request.getNeareastAgentType(myself, 2)};
+		if(water.empty()) { return 1; }
+
+		return 2;
+	};
+
+	searchForWater.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::RandomMove;
+		currentChoice.target = Gg::NoEntity;
+
+		return currentChoice;
+	};
+
+	Node goToWater{};
+	goToWater.nextState = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<Gg::Entity> water{request.getNeareastAgentType(myself, 2)};
+		if(request.distanceBetweenAgent(myself, water[0]) > 5.f) { return 2; }
+
+		return 3;
+	};
+
+	goToWater.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::Move;
+		currentChoice.target = request.getNeareastAgentType(myself, 2)[0];
+
+		return currentChoice;
+	};
+
+	Node drinking{};
+	drinking.nextState = [](Gg::Entity myself, EngineRequest &request) { return 3; };
+	drinking.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::Drink;
+		currentChoice.target = request.getNeareastAgentType(myself, 2)[0];
+
+		return currentChoice;
+	};
+
+	Mode drinkMode{0};
+	drinkMode.addNode(drinkBegin);
+	drinkMode.addNode(searchForWater);
+	drinkMode.addNode(goToWater);
+	drinkMode.addNode(drinking);
+
+
+
+	Node randomMoveNode{};
+	randomMoveNode.nextState = [](Gg::Entity myself, EngineRequest &request) { return 0; };
+
+	randomMoveNode.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::RandomMove;
+		currentChoice.target = Gg::NoEntity;
+
+		return currentChoice;
+	};
+
+
+	Mode randomMoveMode{0};
+	randomMoveMode.addNode(randomMoveNode);
+
+
 	std::shared_ptr<FSM> fsm{std::make_shared<FSM>()};
 	fsm->addMode(eatMode);
+	fsm->addMode(drinkMode);
+	fsm->addMode(randomMoveMode);
 	engine.addComponentToEntity(newEntity, "FSM", std::static_pointer_cast<Gg::Component::AbstractComponent>(fsm));
 
 

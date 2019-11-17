@@ -17,6 +17,9 @@ class EngineRequest {
 
 		float distanceBetweenAgent(const Gg::Entity agent1, const Gg::Entity agent2);
 
+		bool isUnderHungerThreshold(const Gg::Entity asker);
+		bool isUnderThirstThreshold(const Gg::Entity asker);
+
 	protected:
 
 		Gg::GulgEngine &m_engine;      

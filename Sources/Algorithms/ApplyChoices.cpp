@@ -1,6 +1,9 @@
 #include "Algorithms/ApplyChoices.hpp"
 
-ApplyChoices::ApplyChoices(Gg::GulgEngine &gulgEngine): AbstractAlgorithm{gulgEngine} {
+ApplyChoices::ApplyChoices(Gg::GulgEngine &gulgEngine): 
+	AbstractAlgorithm{gulgEngine},
+	m_randomEngine{std::time(nullptr)},
+	m_randomSpeed{-1.f, 1.f}{
 
 	m_signature = gulgEngine.getComponentSignature("Hunger");
 	m_signature += gulgEngine.getComponentSignature("Thirst");
@@ -91,7 +94,11 @@ void ApplyChoices::apply() {
 				std::static_pointer_cast<Gg::Component::Vector2D>(m_gulgEngine.getComponent(choice->target, "Position"))
 			};
 
-			if(targetType->value == 2 && Gg::Maths::distance(*position, *targetPosition) < 1.f) { 
+			std::shared_ptr<Gg::Component::Float> maxSpeed{ 
+				std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "MaxSpeed"))
+			};
+
+			if(targetType->value == 2 && Gg::Maths::distance(*position, *targetPosition) < maxSpeed->value) { 
 
 				std::shared_ptr<Gg::Component::Float> thirst{ 
 					std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Thirst"))
@@ -99,7 +106,26 @@ void ApplyChoices::apply() {
 
 				thirst->value = 100.f; 
 			}
+		}
 
+		if(choice->choice == Choice::RandomMove) {
+
+			std::shared_ptr<Gg::Component::Vector2D> currentSpeed{ 
+				std::static_pointer_cast<Gg::Component::Vector2D>(m_gulgEngine.getComponent(currentEntity, "CurrentSpeed"))
+			};
+
+			if(currentSpeed->value == sf::Vector2f{0.f, 0.f}) {
+
+				std::shared_ptr<Gg::Component::Float> maxSpeed{ 
+					std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "MaxSpeed"))
+				};
+					
+   			 	currentSpeed->value.x = m_randomSpeed(m_randomEngine);
+   			 	currentSpeed->value.y = m_randomSpeed(m_randomEngine);
+   			 	currentSpeed->value *= maxSpeed->value;
+			}
+
+			position->value += currentSpeed->value;
 		}
 	}
 }

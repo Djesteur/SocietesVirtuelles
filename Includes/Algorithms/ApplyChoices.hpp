@@ -1,6 +1,8 @@
 #ifndef APPLY_CHOICES_HPP
 #define APPLY_CHOICES_HPP
 
+#include <random>
+
 #include "Algorithms/Algorithm.hpp"
 
 #include "Components/BasicComponents.hpp"
@@ -19,6 +21,9 @@ class ApplyChoices: public Gg::Algorithm::AbstractAlgorithm {
 		void apply(); 
 
 	protected:
+
+		std::default_random_engine m_randomEngine;
+		std::uniform_real_distribution<float> m_randomSpeed;
 
 };
 

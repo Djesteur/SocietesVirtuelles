@@ -55,3 +55,25 @@ float EngineRequest::distanceBetweenAgent(const Gg::Entity agent1, const Gg::Ent
 
 	return Gg::Maths::distance(*pos1, *pos2);
 }
+
+bool EngineRequest::isUnderHungerThreshold(const Gg::Entity asker) {
+
+	std::shared_ptr<Gg::Component::Float> hunger{ 
+		std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(asker, "Hunger"))
+	};
+
+	if(hunger->value < 50) { return true; }
+
+	return false;
+}
+
+bool EngineRequest::isUnderThirstThreshold(const Gg::Entity asker) {
+
+	std::shared_ptr<Gg::Component::Float> thrist{ 
+		std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(asker, "Thirst"))
+	};
+
+	if(thrist->value < 50) { return true; }
+
+	return false;
+}

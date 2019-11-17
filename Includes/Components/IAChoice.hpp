@@ -3,7 +3,7 @@
 
 #include "Components/Component.hpp"
 
-enum class Choice{Unknow, Move, Eat, Drink, Reproduction};
+enum class Choice{Unknow, Move, Eat, Drink, Reproduction, RandomMove};
 
 struct IAChoice: public Gg::Component::AbstractComponent {
 
