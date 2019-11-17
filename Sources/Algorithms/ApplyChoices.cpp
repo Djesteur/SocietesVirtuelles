@@ -1,9 +1,10 @@
 #include "Algorithms/ApplyChoices.hpp"
 
-ApplyChoices::ApplyChoices(Gg::GulgEngine &gulgEngine): 
+ApplyChoices::ApplyChoices(Gg::GulgEngine &gulgEngine, std::vector<std::pair<Gg::Entity, Gg::Entity>> &animalsToReproduce): 
 	AbstractAlgorithm{gulgEngine},
-	m_randomEngine{std::time(nullptr)},
-	m_randomSpeed{-1.f, 1.f}{
+	m_randomEngine{static_cast<long unsigned int>(std::time(nullptr))},
+	m_randomSpeed{-1.f, 1.f},
+	m_animalsToReproduce{animalsToReproduce} {
 
 	m_signature = gulgEngine.getComponentSignature("Hunger");
 	m_signature += gulgEngine.getComponentSignature("Thirst");
@@ -55,7 +56,6 @@ void ApplyChoices::apply() {
 
 			currentSpeed->value *= maxSpeed->value;
 			position->value += currentSpeed->value;
-
 		}
 
 		if(choice->choice == Choice::Eat) {
@@ -127,5 +127,43 @@ void ApplyChoices::apply() {
 
 			position->value += currentSpeed->value;
 		}
+
+		if(choice->choice == Choice::Reproduction) {
+
+			std::shared_ptr<Gg::Component::UnsignedInt> targetType{ 
+				std::static_pointer_cast<Gg::Component::UnsignedInt>(m_gulgEngine.getComponent(choice->target, "AgentType"))
+			};
+
+			std::shared_ptr<Gg::Component::Vector2D> targetPosition{ 
+				std::static_pointer_cast<Gg::Component::Vector2D>(m_gulgEngine.getComponent(choice->target, "Position"))
+			};
+
+			std::shared_ptr<Gg::Component::Float> maxSpeed{ 
+				std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "MaxSpeed"))
+			};
+
+			std::shared_ptr<Gg::Component::Float> reproduction{ 
+				std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Reproduction"))
+			};
+
+			std::shared_ptr<Gg::Component::Float> targetReproduction{ 
+				std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(choice->target, "Reproduction"))
+			};
+
+			if(targetType->value == 0 
+			&& Gg::Maths::distance(*position, *targetPosition) < maxSpeed->value
+			&& reproduction->value <= 0
+			&& targetReproduction->value <= 0) { 
+
+				reproduction->value = 100.f;
+				targetReproduction->value = 100.f;
+				m_animalsToReproduce.emplace_back(currentEntity, choice->target);
+			}
+		}
+
+		if(position->value.x > 800.f) { position->value.x = 0.f; }
+		if(position->value.x < 0.f) { position->value.x = 800.f; }
+		if(position->value.y > 800.f) { position->value.y = 0.f; }
+		if(position->value.x < 0.f) { position->value.y = 800.f; }
 	}
 }

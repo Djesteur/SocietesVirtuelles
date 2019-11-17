@@ -59,18 +59,19 @@ struct FSM: public Gg::Component::AbstractComponent {
 
 		virtual std::shared_ptr<AbstractComponent> clone() const { return std::static_pointer_cast<AbstractComponent>(std::make_shared<FSM>(*this)); }         
 
-		void selectMode(Gg::Entity myself, EngineRequest &request) { 
+		unsigned int selectMode(Gg::Entity myself, EngineRequest &request) { 
 
-			if(request.isUnderHungerThreshold(myself)) { m_currentMode = 0; }
-			else if(request.isUnderThirstThreshold(myself)) { m_currentMode = 1; }
-			else { m_currentMode = 2; }
+			if(request.isUnderHungerThreshold(myself)) { return 0; }
+			else if(request.isUnderThirstThreshold(myself)) { return 1; }
+			else if(request.canReproduce(myself)) { return 2; }
+			return 3;
 		}
 
 		void addMode(Mode newMode) { m_modes.emplace_back(newMode); }
 
 		IAChoice makeChoice(Gg::Entity myself, EngineRequest &request) { 
 
-			selectMode(myself,request);
+			m_currentMode = selectMode(myself,request);
 			if(m_currentMode != m_oldMode) { m_modes[m_currentMode].reset(); }
 			m_oldMode = m_currentMode;
 			return m_modes[m_currentMode].moveForward(myself, request);

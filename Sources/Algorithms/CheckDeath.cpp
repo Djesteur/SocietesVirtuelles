@@ -28,7 +28,7 @@ void CheckDeath::apply() {
 			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Death"))
 		};
 
-		if(hunger->value <= 0.f || thirst->value <= 0.f /*|| death->value <= 0.f*/) { m_entitiesToKill.emplace_back(currentEntity); }
+		if(hunger->value <= 0.f || thirst->value <= 0.f || death->value <= 0.f) { m_entitiesToKill.emplace_back(currentEntity); }
 
 	}
 }

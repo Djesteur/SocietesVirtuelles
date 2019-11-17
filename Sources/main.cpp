@@ -46,7 +46,7 @@ int main() {
 		Gg::Entity firstGrass{createGrass(engine)};
 		ressources.emplace_back(firstGrass);
 
-		for(unsigned int i{0}; i < 7; i++) {
+		for(unsigned int i{0}; i < 30; i++) {
 
 			ressources.emplace_back(engine.cloneEntity(firstGrass));
 		}
@@ -54,7 +54,7 @@ int main() {
 		Gg::Entity firstWater{createWater(engine)};
 		ressources.emplace_back(firstWater);
 
-		for(unsigned int i{0}; i < 7; i++) {
+		for(unsigned int i{0}; i < 30; i++) {
 
 			ressources.emplace_back(engine.cloneEntity(firstWater));
 		}
@@ -64,7 +64,7 @@ int main() {
 		allAgents.insert(allAgents.end(), allAnimals.begin(), allAnimals.end());
 		allAgents.insert(allAgents.end(), ressources.begin(), ressources.end());
 
-		randomPositionForAgents(engine, allAgents, sf::FloatRect{100.f, 100.f, 600.f, 600.f});
+		randomPositionForAgents(engine, allAgents, sf::FloatRect{0.f, 0.f, 800.f, 800.f});
 
 		AgentDraw drawSystem{window, engine};
 		AnimalsUpdate animalsStatesUpdates{engine};
@@ -84,6 +84,7 @@ int main() {
 		}
 
 		std::vector<Gg::Entity> deadAnimals;
+		std::vector<std::pair<Gg::Entity, Gg::Entity>> reproduceAnimals;
 
 		const float nbUpdatePerSecond{20.f};
 		const float timeBeetweenUpdate{1'000'000.f/nbUpdatePerSecond};
@@ -113,6 +114,24 @@ int main() {
 				elapsedTime -= sf::microseconds(timeBeetweenUpdate);
 
 				animalsStatesUpdates.applyAlgorithms();
+				ia.applyAlgorithms();
+
+				reproduceAnimals = ia.getAnimalsToReproduce();
+
+				for(std::pair<Gg::Entity, Gg::Entity> currentPair: reproduceAnimals) {
+
+					Gg::Entity newAnimal1 = engine.cloneEntity(currentPair.first);
+					Gg::Entity newAnimal2 = engine.cloneEntity(currentPair.second);
+
+					drawSystem.addEntity(newAnimal1); 
+					animalsStatesUpdates.addEntity(newAnimal1);
+					ia.addEntity(newAnimal1);
+
+					drawSystem.addEntity(newAnimal2); 
+					animalsStatesUpdates.addEntity(newAnimal2);
+					ia.addEntity(newAnimal2);
+				}
+
 				deadAnimals = animalsStatesUpdates.getEntitiesToKill();
 
 				for(Gg::Entity currentEntity: deadAnimals) { 
@@ -123,7 +142,6 @@ int main() {
 					engine.deleteEntity(currentEntity);
 				}
 
-				ia.applyAlgorithms();
 			}
 
 

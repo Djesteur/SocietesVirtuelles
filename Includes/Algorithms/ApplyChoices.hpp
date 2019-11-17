@@ -14,7 +14,7 @@ class ApplyChoices: public Gg::Algorithm::AbstractAlgorithm {
 
 	public:
 
-		ApplyChoices(Gg::GulgEngine &gulgEngine);
+		ApplyChoices(Gg::GulgEngine &gulgEngine, std::vector<std::pair<Gg::Entity, Gg::Entity>> &animalsToReproduce);
 		
 		virtual ~ApplyChoices(); 
 
@@ -24,6 +24,8 @@ class ApplyChoices: public Gg::Algorithm::AbstractAlgorithm {
 
 		std::default_random_engine m_randomEngine;
 		std::uniform_real_distribution<float> m_randomSpeed;
+
+		std::vector<std::pair<Gg::Entity, Gg::Entity>> &m_animalsToReproduce;
 
 };
 

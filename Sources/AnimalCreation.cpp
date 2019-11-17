@@ -200,6 +200,7 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 
 
 
+
 	Node randomMoveNode{};
 	randomMoveNode.nextState = [](Gg::Entity myself, EngineRequest &request) { return 0; };
 
@@ -213,6 +214,93 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	};
 
 
+	Node beginReproduction{};
+	beginReproduction.nextState = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<Gg::Entity> partners{request.getPartners(myself)};
+		if(partners.empty()) { return 1; }
+
+		if(request.distanceBetweenAgent(myself, partners[0]) > 5.f) { return 2; }
+
+		return 3;
+	};
+
+	Node searchForPartner{};
+	searchForPartner.nextState = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<Gg::Entity> partners{request.getPartners(myself)};
+		if(partners.empty()) { return 1; }
+
+		return 2;
+	};
+
+	searchForPartner.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::RandomMove;
+		currentChoice.target = Gg::NoEntity;
+
+		return currentChoice;
+	};
+
+	Node goToPartner{};
+	goToPartner.nextState = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<Gg::Entity> partners{request.getPartners(myself)};
+		if(partners.empty()) { return 1; }
+		else if(request.distanceBetweenAgent(myself, partners[0]) > 5.f) { return 2; }
+
+		return 3;
+	};
+
+	goToPartner.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::Move;
+
+		std::vector<Gg::Entity> partners{request.getPartners(myself)};
+		if(!partners.empty()) { currentChoice.target = partners[0]; }
+		else { currentChoice.target = myself; }
+
+		return currentChoice;
+	};
+
+	Node reproduce{};
+	reproduce.nextState = [](Gg::Entity myself, EngineRequest &request) { 
+
+		std::vector<Gg::Entity> partners{request.getPartners(myself)};
+		if(!partners.empty() && request.distanceBetweenAgent(myself, partners[0]) < 5.f) { return 3; }
+
+		return 2; 
+	};
+
+	reproduce.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::Reproduction;
+		currentChoice.target = request.getPartners(myself)[0];
+
+		return currentChoice;
+	};
+
+	Mode reproductionMode{0};
+	reproductionMode.addNode(beginReproduction);
+	reproductionMode.addNode(searchForPartner);
+	reproductionMode.addNode(goToPartner);
+	reproductionMode.addNode(reproduce);
+
+
+	Node randomMove{};
+	randomMove.nextState = [](Gg::Entity myself, EngineRequest &request) { return 0; };
+	randomMove.getAction = [](Gg::Entity myself, EngineRequest &request) {
+
+		IAChoice currentChoice;
+		currentChoice.choice = Choice::RandomMove;
+		currentChoice.target = Gg::NoEntity;
+
+		return currentChoice;
+	};
+
 	Mode randomMoveMode{0};
 	randomMoveMode.addNode(randomMoveNode);
 
@@ -220,6 +308,7 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	std::shared_ptr<FSM> fsm{std::make_shared<FSM>()};
 	fsm->addMode(eatMode);
 	fsm->addMode(drinkMode);
+	fsm->addMode(reproductionMode);
 	fsm->addMode(randomMoveMode);
 	engine.addComponentToEntity(newEntity, "FSM", std::static_pointer_cast<Gg::Component::AbstractComponent>(fsm));
 

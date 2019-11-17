@@ -77,3 +77,45 @@ bool EngineRequest::isUnderThirstThreshold(const Gg::Entity asker) {
 
 	return false;
 }
+
+std::vector<Gg::Entity> EngineRequest::getPartners(const Gg::Entity asker) {
+
+	std::vector<Gg::Entity> entities{m_engine.getAllEntities()}, result;
+
+	std::shared_ptr<Gg::Component::Float> viewRadius{ 
+		std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(asker, "ViewRadius"))
+	};
+
+	for(Gg::Entity currentEntity: entities) {
+
+		std::shared_ptr<Gg::Component::UnsignedInt> entityType{ 
+			std::static_pointer_cast<Gg::Component::UnsignedInt>(m_engine.getComponent(currentEntity, "AgentType"))
+		};
+
+		if(currentEntity != asker 
+		&& entityType->value == 0
+		&& canReproduce(currentEntity)
+		&& distanceBetweenAgent(asker, currentEntity) < viewRadius->value) { result.emplace_back(currentEntity); }
+
+	}
+
+	return result;
+}
+
+bool EngineRequest::canReproduce(const Gg::Entity agent) {
+
+	std::shared_ptr<Gg::Component::UnsignedInt> entityType{ 
+		std::static_pointer_cast<Gg::Component::UnsignedInt>(m_engine.getComponent(agent, "AgentType"))
+	};
+
+	if(entityType->value == 0) {
+
+		std::shared_ptr<Gg::Component::Float> reproduction{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(agent, "Reproduction"))
+		};
+
+		if(reproduction->value <= 0.f) { return true;}
+	}
+
+	return false;
+}

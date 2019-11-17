@@ -14,7 +14,12 @@ class AnimalsIA: public Gg::Systems::AbstractSystem {
 		
 		virtual ~AnimalsIA();
 
+		void applyAlgorithms();
+		std::vector<std::pair<Gg::Entity, Gg::Entity>> getAnimalsToReproduce();
+
 	protected:
+
+		std::vector<std::pair<Gg::Entity, Gg::Entity>> m_animalsToReproduce;
 };
 
 
