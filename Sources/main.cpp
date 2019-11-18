@@ -158,6 +158,7 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 
 				animalsStatesUpdates.applyAlgorithms();
 				ia.applyAlgorithms();
+				stats.applyAlgorithms();
 
 				reproduceAnimals = ia.getAnimalsToReproduce();
 
@@ -181,14 +182,8 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 				}
 			}
 
-			std::string const nomFichier("./stats.txt");
-    std::ofstream monFlux(nomFichier.c_str());
-    if(monFlux) {
-		for(Gg::Entity currentEntity: allAnimals) {
-        	monFlux << currentEntity << std::endl;
-    	}
-	}
-
+			
+			system("start gnuplot -persist -e \"plot './gnuplot.txt'\"");
 
 			//Draw
 

@@ -8,6 +8,8 @@
 
 #include "Algorithms/StatsAlgo.hpp"
 
+#include "Components/BasicComponents.hpp"
+
 class Statistics: public Gg::Systems::AbstractSystem {
 
 	public:
@@ -16,9 +18,13 @@ class Statistics: public Gg::Systems::AbstractSystem {
 		
 		virtual ~Statistics();
 
-		void stats();
+		void applyAlgorithms();
+
+
+		std::vector<Gg::Entity> getEntities();
 
 	protected:
+		std::vector<Gg::Entity> m_entities;
 };
 
 

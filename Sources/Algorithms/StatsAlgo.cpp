@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-using namespace std;
 
 StatsAlgo::StatsAlgo(Gg::GulgEngine &gulgEngine): 
 	AbstractAlgorithm{gulgEngine} {
@@ -22,11 +21,25 @@ StatsAlgo::~StatsAlgo() {}
 
 
 void StatsAlgo::apply() {
-	string const nomFichier("./stats.txt");
-    ofstream monFlux(nomFichier.c_str());
-    if(monFlux) {
-		for(Gg::Entity currentEntity: m_entitiesToApply) {
-        	monFlux << "hey" << endl;
-    	}
+		std::string const nomFichier("./Stats/stats.txt");
+	    std::ofstream monFlux(nomFichier.c_str());
+
+		std::cout << m_entitiesToApply.size() << std::endl;
+		//cout << "hey" << endl;
+	for(Gg::Entity currentEntity: m_entitiesToApply) {
+
+		std::shared_ptr<Gg::Component::Float> hunger{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Hunger"))
+		};
+
+		std::shared_ptr<Gg::Component::Float> thirst{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Thirst"))
+		};
+
+		std::shared_ptr<Gg::Component::Float> death{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Death"))
+		};
+
+		monFlux << hunger->value << " " << thirst->value << " " << death->value << std::endl;
 	}
 }

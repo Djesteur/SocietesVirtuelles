@@ -11,13 +11,9 @@ Statistics::Statistics(Gg::GulgEngine &gulgEngine): AbstractSystem{gulgEngine} {
 
 Statistics::~Statistics() {}
 
-void Statistics::stats() {
+void Statistics::applyAlgorithms() {
 
-	/*string const nomFichier("./stats.txt");
-    ofstream monFlux(nomFichier.c_str());
-    if(monFlux) {
-		for(Gg::Entity currentEntity: m_entitiesToApply) {
-        	monFlux << "hey" << endl;
-    	}
-	}*/
+	for(std::unique_ptr<Gg::Algorithm::AbstractAlgorithm> &currentAlgo: m_algorithms) { currentAlgo->apply(); }
 }
+
+std::vector<Gg::Entity> Statistics::getEntities() { return m_entities; }
