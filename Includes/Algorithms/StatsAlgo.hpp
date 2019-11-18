@@ -2,6 +2,8 @@
 #define STATS_ALGO_HPP
 
 #include <random>
+#include <iostream>
+#include <fstream>
 
 #include "Algorithms/Algorithm.hpp"
 

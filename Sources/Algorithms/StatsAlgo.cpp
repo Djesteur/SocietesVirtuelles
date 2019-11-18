@@ -1,4 +1,8 @@
 #include "Algorithms/StatsAlgo.hpp"
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
 
 StatsAlgo::StatsAlgo(Gg::GulgEngine &gulgEngine): 
 	AbstractAlgorithm{gulgEngine} {
@@ -16,7 +20,13 @@ StatsAlgo::StatsAlgo(Gg::GulgEngine &gulgEngine):
 
 StatsAlgo::~StatsAlgo() {}
 
-void StatsAlgo::apply() {
 
-	for(Gg::Entity currentEntity: m_entitiesToApply) {}
+void StatsAlgo::apply() {
+	string const nomFichier("./stats.txt");
+    ofstream monFlux(nomFichier.c_str());
+    if(monFlux) {
+		for(Gg::Entity currentEntity: m_entitiesToApply) {
+        	monFlux << "hey" << endl;
+    	}
+	}
 }

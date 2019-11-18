@@ -1,5 +1,7 @@
 #include <iostream>
 #include <memory>
+#include <fstream>
+#include <string>
 
 #include <SFML/Graphics.hpp>
 
@@ -12,6 +14,8 @@
 #include "Systems/AnimalsUpdate.hpp"
 
 #include "Systems/AnimalsIA.hpp"
+
+#include "Systems/Statistics.hpp"
 
 #include "EngineRequest.hpp"
 
@@ -69,6 +73,8 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 	&& engine.loadTexture("Water", "Datas/Water.png")) {
 
 		std::vector<Gg::Entity> allAnimals;
+
+		Statistics stats{engine};
 
 		Gg::Entity beginAnimal{generateRandomSpecies(engine)};
 
@@ -173,8 +179,15 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 					ia.deleteEntity(currentEntity);
 					engine.deleteEntity(currentEntity);
 				}
-
 			}
+
+			std::string const nomFichier("./stats.txt");
+    std::ofstream monFlux(nomFichier.c_str());
+    if(monFlux) {
+		for(Gg::Entity currentEntity: allAnimals) {
+        	monFlux << currentEntity << std::endl;
+    	}
+	}
 
 
 			//Draw

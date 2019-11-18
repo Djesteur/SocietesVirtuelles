@@ -16,6 +16,8 @@ class Statistics: public Gg::Systems::AbstractSystem {
 		
 		virtual ~Statistics();
 
+		void stats();
+
 	protected:
 };
 
