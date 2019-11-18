@@ -20,6 +20,7 @@ class CheckDeath: public Gg::Algorithm::AbstractAlgorithm {
 	protected:
 
 		std::vector<Gg::Entity> &m_entitiesToKill;
+		//std::ofstream monFlux{ "./Stats/nombre.txt" };
 
 };
 

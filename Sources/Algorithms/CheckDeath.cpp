@@ -12,8 +12,12 @@ CheckDeath::CheckDeath(Gg::GulgEngine &gulgEngine, std::vector<Gg::Entity> &enti
 
 CheckDeath::~CheckDeath() {}
 
+
+
 void CheckDeath::apply() {
 
+		std::string const nomFichier("./Stats/nombre.txt");
+	    std::ofstream monFlux(nomFichier.c_str());
 	for(Gg::Entity currentEntity: m_entitiesToApply) {
 
 		std::shared_ptr<Gg::Component::Float> hunger{ 
@@ -27,6 +31,10 @@ void CheckDeath::apply() {
 		std::shared_ptr<Gg::Component::Float> death{ 
 			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Death"))
 		};
+
+		if(monFlux) {
+	    	monFlux << hunger->value << " " << thirst->value << " " << death->value << std::endl;
+	    }
 
 		if(hunger->value <= 0.f || thirst->value <= 0.f || death->value <= 0.f) { m_entitiesToKill.emplace_back(currentEntity); }
 

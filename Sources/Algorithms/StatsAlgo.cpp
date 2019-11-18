@@ -21,11 +21,9 @@ StatsAlgo::~StatsAlgo() {}
 
 
 void StatsAlgo::apply() {
-		std::string const nomFichier("./Stats/stats.txt");
+		std::string const nomFichier("./Stats/nombre.txt");
 	    std::ofstream monFlux(nomFichier.c_str());
 
-		std::cout << m_entitiesToApply.size() << std::endl;
-		//cout << "hey" << endl;
 	for(Gg::Entity currentEntity: m_entitiesToApply) {
 
 		std::shared_ptr<Gg::Component::Float> hunger{ 

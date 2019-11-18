@@ -35,6 +35,8 @@ int main(int argc, char* argv[]) {
 	if(argc == 1) {
 
 		startWithWindow(15, 15, 15, 500);
+
+		system("gnuplot ./Stats/script_gnuplot.txt" );
 	}
 
 	else {
@@ -44,6 +46,7 @@ int main(int argc, char* argv[]) {
 
 			std::string nbUpdateMax{argv[2]};
 			startWithoutWindow(15, 15, 15, 500, static_cast<unsigned int>(std::stoi(nbUpdateMax)));
+
 
 		}
 
@@ -158,7 +161,7 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 
 				animalsStatesUpdates.applyAlgorithms();
 				ia.applyAlgorithms();
-				stats.applyAlgorithms();
+				//stats.applyAlgorithms();
 
 				reproduceAnimals = ia.getAnimalsToReproduce();
 
@@ -180,10 +183,10 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 					ia.deleteEntity(currentEntity);
 					engine.deleteEntity(currentEntity);
 				}
+
 			}
 
 			
-			system("start gnuplot -persist -e \"plot './gnuplot.txt'\"");
 
 			//Draw
 
