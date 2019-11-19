@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 
 #include "Algorithms/Algorithm.hpp"
+#include <iostream>
+#include <fstream>
 
 #include "Components/BasicComponents.hpp"
 
@@ -18,9 +20,11 @@ class CheckDeath: public Gg::Algorithm::AbstractAlgorithm {
 		void apply(); 
 
 	protected:
-
+		bool opened = false;
 		std::vector<Gg::Entity> &m_entitiesToKill;
+		std::ofstream monFlux;
 		//std::ofstream monFlux{ "./Stats/nombre.txt" };
+		//FILE* fichier;  = fopen("./Stats/nombre.txt", "w+");
 
 };
 
