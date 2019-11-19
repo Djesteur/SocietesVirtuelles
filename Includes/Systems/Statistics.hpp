@@ -1,6 +1,10 @@
 #ifndef STATISTICS_HPP
 #define STATISTICS_HPP
 
+#include <iostream>
+#include <fstream>
+#include <string>
+
 #include "Systems/AbstractSystem.hpp"
 
 #include "Algorithms/NeedsUpdates.hpp"

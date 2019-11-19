@@ -21,6 +21,7 @@ StatsAlgo::~StatsAlgo() {}
 
 
 void StatsAlgo::apply() {
+	
 		std::string const nomFichier("./Stats/nombre.txt");
 	    std::ofstream monFlux(nomFichier.c_str());
 

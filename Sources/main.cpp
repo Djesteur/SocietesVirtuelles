@@ -19,6 +19,8 @@
 
 #include "EngineRequest.hpp"
 
+#include "Systems/Statistics.hpp"
+
 void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, const unsigned int nbWater, const unsigned int nbUpdatePerSecond);
 void startWithoutWindow(const unsigned int nbAnimal, const unsigned int nbGrass, const unsigned int nbWater, 
 					    const unsigned int nbUpdatePerSecond, const unsigned int nbUpdateMax);
@@ -122,6 +124,7 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 			drawSystem.addEntity(currentEntity); 
 			animalsStatesUpdates.addEntity(currentEntity);
 			ia.addEntity(currentEntity);
+			stats.addEntity(currentEntity);
 		}
 
 		for(Gg::Entity currentEntity: ressources) { 
@@ -160,7 +163,7 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 
 				animalsStatesUpdates.applyAlgorithms();
 				ia.applyAlgorithms();
-				//stats.applyAlgorithms();
+				stats.applyAlgorithms();
 
 				reproduceAnimals = ia.getAnimalsToReproduce();
 
@@ -171,6 +174,7 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 					drawSystem.addEntity(newAnimal); 
 					animalsStatesUpdates.addEntity(newAnimal);
 					ia.addEntity(newAnimal);
+					stats.addEntity(newAnimal);
 				}
 
 				deadAnimals = animalsStatesUpdates.getEntitiesToKill();
@@ -181,6 +185,7 @@ void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, co
 					animalsStatesUpdates.deleteEntity(currentEntity);
 					ia.deleteEntity(currentEntity);
 					engine.deleteEntity(currentEntity);
+					stats.deleteEntity(currentEntity);
 				}
 
 			}

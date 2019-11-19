@@ -1,8 +1,5 @@
 #include "Systems/Statistics.hpp"
-#include <iostream>
-#include <fstream>
-#include <string>
-using namespace std;
+
 
 Statistics::Statistics(Gg::GulgEngine &gulgEngine): AbstractSystem{gulgEngine} {
 
