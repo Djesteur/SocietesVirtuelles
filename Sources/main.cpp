@@ -252,10 +252,13 @@ void startWithoutWindow(const unsigned int nbAnimal, const unsigned int nbGrass,
 
 		AnimalsIA ia{engine};
 
+		Statistics stats{engine};
+
 		for(Gg::Entity currentEntity: allAnimals) { 
 
 			animalsStatesUpdates.addEntity(currentEntity);
 			ia.addEntity(currentEntity);
+			stats.addEntity(currentEntity);
 		}
 
 
@@ -277,6 +280,7 @@ void startWithoutWindow(const unsigned int nbAnimal, const unsigned int nbGrass,
 
 				animalsStatesUpdates.addEntity(newAnimal);
 				ia.addEntity(newAnimal);
+				stats.addEntity(newAnimal);
 			}
 
 			deadAnimals = animalsStatesUpdates.getEntitiesToKill();
@@ -286,6 +290,7 @@ void startWithoutWindow(const unsigned int nbAnimal, const unsigned int nbGrass,
 				animalsStatesUpdates.deleteEntity(currentEntity);
 				ia.deleteEntity(currentEntity);
 				engine.deleteEntity(currentEntity);
+				stats.deleteEntity(currentEntity);
 			}
 
 			nbUpdate++;
