@@ -36,8 +36,8 @@ int main(int argc, char* argv[]) {
 
 	if(argc == 1) {
 
-		startWithWindow(15, 15, 15, 500);
-		system("gnuplot ./Stats/script_gnuplot.txt" );
+		startWithWindow(15, 15, 15, 200);
+		//system("gnuplot ./Stats/script_gnuplot.txt" );
 	}
 
 	else {
@@ -271,6 +271,7 @@ void startWithoutWindow(const unsigned int nbAnimal, const unsigned int nbGrass,
 
 			animalsStatesUpdates.applyAlgorithms();
 			ia.applyAlgorithms();
+			stats.applyAlgorithms();
 
 			reproduceAnimals = ia.getAnimalsToReproduce();
 

@@ -22,6 +22,9 @@ class StatsAlgo: public Gg::Algorithm::AbstractAlgorithm {
 
 	protected:
 
+		unsigned int nbUpdates;
+		std::ofstream file;
+
 
 };
 

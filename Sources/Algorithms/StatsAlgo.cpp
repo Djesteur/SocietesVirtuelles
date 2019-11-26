@@ -4,7 +4,9 @@
 #include <string>
 
 StatsAlgo::StatsAlgo(Gg::GulgEngine &gulgEngine): 
-	AbstractAlgorithm{gulgEngine} {
+	AbstractAlgorithm{gulgEngine},
+	nbUpdates{0},
+	file{"./Stats/test.txt"} {
 
 	m_signature = gulgEngine.getComponentSignature("AgentType");
 	m_signature += gulgEngine.getComponentSignature("Hunger");
@@ -21,9 +23,6 @@ StatsAlgo::~StatsAlgo() {}
 
 
 void StatsAlgo::apply() {
-	
-		std::string const nomFichier("./Stats/nombre.txt");
-	    std::ofstream monFlux(nomFichier.c_str());
 
 	for(Gg::Entity currentEntity: m_entitiesToApply) {
 
@@ -39,6 +38,10 @@ void StatsAlgo::apply() {
 			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Death"))
 		};
 
-		monFlux << hunger->value << " " << thirst->value << " " << death->value << std::endl;
+		
 	}
+
+	file << nbUpdates << " " << m_entitiesToApply.size() << std::endl;
+
+	nbUpdates++;
 }
