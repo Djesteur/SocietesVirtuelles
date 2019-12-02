@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 	if(argc == 1) {
 
 		startWithWindow(15, 15, 15, 200);
-		//system("gnuplot ./Stats/script_gnuplot.txt" );
+		system("gnuplot ./Stats/script_gnuplot.txt" );
 	}
 
 	else {

@@ -1,0 +1,8 @@
+nombre : Nombre d'individus dans le temps
+d_hunger : Taux de Hunger_decrease par individu
+d_thirst : Taux de Thirst_decrease par individu
+dead : Cause des morts des individus
+d_death : Taux de Death_Decrease par individu
+d_reproduction : Taux de Reproduction_Decrease par individu
+m_speed : Vitesse max par individu
+choice : choix des animaux dans le temps
