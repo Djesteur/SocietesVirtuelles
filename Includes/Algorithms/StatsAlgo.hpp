@@ -23,9 +23,7 @@ class StatsAlgo: public Gg::Algorithm::AbstractAlgorithm {
 	protected:
 
 		unsigned int nbUpdates;
-<<<<<<< HEAD
 		std::ofstream file;
-=======
 		std::ofstream nombre;
 		std::ofstream d_hunger;
 		std::ofstream d_thirst;
@@ -35,8 +33,6 @@ class StatsAlgo: public Gg::Algorithm::AbstractAlgorithm {
 		std::ofstream m_speed;
 		std::ofstream choice;
 
-
->>>>>>> b90141885fcc588c8a060331afe3494afb9357d0
 };
 
 #endif
