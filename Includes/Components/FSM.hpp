@@ -55,10 +55,10 @@ struct FSM: public Gg::Component::AbstractComponent {
 
 		FSM() {}
 		FSM(const FSM &fsmComponent):
+			selectMode{fsmComponent.selectMode},
 			m_currentMode{fsmComponent.m_currentMode},
 			m_oldMode{fsmComponent.m_oldMode},
-			m_modes{fsmComponent.m_modes},
-			selectMode{fsmComponent.selectMode} {}
+			m_modes{fsmComponent.m_modes} {}
 
 		virtual std::shared_ptr<AbstractComponent> clone() const { return std::static_pointer_cast<AbstractComponent>(std::make_shared<FSM>(*this)); }         
 

@@ -18,7 +18,7 @@ class Statistics: public Gg::Systems::AbstractSystem {
 
 	public:
 
-		Statistics(Gg::GulgEngine &gulgEngine);
+		Statistics(Gg::GulgEngine &gulgEngine, const std::string folderPath);
 		
 		virtual ~Statistics();
 

@@ -14,7 +14,7 @@ class StatsAlgo: public Gg::Algorithm::AbstractAlgorithm {
 
 	public:
 
-		StatsAlgo(Gg::GulgEngine &gulgEngine);
+		StatsAlgo(Gg::GulgEngine &gulgEngine, const std::string folderPath);
 		
 		virtual ~StatsAlgo(); 
 
@@ -24,8 +24,6 @@ class StatsAlgo: public Gg::Algorithm::AbstractAlgorithm {
 
 		unsigned int nbUpdates;
 		std::ofstream file;
-
-
 };
 
 #endif

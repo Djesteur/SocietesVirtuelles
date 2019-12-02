@@ -311,7 +311,10 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 
 		IAChoice currentChoice;
 		currentChoice.choice = Choice::Reproduction;
-		currentChoice.target = request.getPartners(myself)[0];
+		std::vector<Gg::Entity> partners{request.getPartners(myself)};
+		if(!partners.empty()) { currentChoice.target = request.getPartners(myself)[0]; }
+		else { currentChoice.target = Gg::NoEntity; }
+		
 
 		return currentChoice;
 	};
@@ -354,13 +357,6 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	fsm->addMode(drinkMode);
 	fsm->addMode(reproductionMode);
 	fsm->addMode(randomMoveMode);
-	/*fsm->selectMode = [](Gg::Entity myself, EngineRequest &request) {
-
-		if(request.isUnderHungerThreshold(myself)) { return 0; }
-		else if(request.isUnderThirstThreshold(myself)) { return 1; }
-		else if(request.canReproduce(myself)) { return 2; }
-		return 3;
-	};*/
 
 	fsm->selectMode = [](Gg::Entity myself, EngineRequest &request) {
 

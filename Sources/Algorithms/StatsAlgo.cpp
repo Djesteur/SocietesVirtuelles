@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-StatsAlgo::StatsAlgo(Gg::GulgEngine &gulgEngine): 
+StatsAlgo::StatsAlgo(Gg::GulgEngine &gulgEngine, const std::string folderPath): 
 	AbstractAlgorithm{gulgEngine},
 	nbUpdates{0},
 	file{"./Stats/test.txt"} {
