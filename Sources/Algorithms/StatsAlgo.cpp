@@ -6,10 +6,18 @@
 StatsAlgo::StatsAlgo(Gg::GulgEngine &gulgEngine, const std::string folderPath): 
 	AbstractAlgorithm{gulgEngine},
 	nbUpdates{0},
-	file{"./Stats/test.txt"} {
+	nombre{"./Stats/nombre.txt"},
+	d_hunger{"./Stats/d_hunger.txt"},
+	d_thirst{"./Stats/d_thirst.txt"},
+	dead{"./Stats/dead.txt"},
+	d_death{"./Stats/d_death.txt"},
+	d_reproduction{"./Stats/d_reproduction.txt"},
+	m_speed{"./Stats/m_speed.txt"},
+	choice{"./Stats/choice.txt"} {
 
 	m_signature = gulgEngine.getComponentSignature("AgentType");
 	m_signature += gulgEngine.getComponentSignature("Hunger");
+	//m_signature += gulgEngine.getComponentSignature("HungerDecrease");
 	m_signature += gulgEngine.getComponentSignature("Thirst");
 	m_signature += gulgEngine.getComponentSignature("Death");
 	m_signature += gulgEngine.getComponentSignature("Reproduction");
@@ -24,7 +32,7 @@ StatsAlgo::~StatsAlgo() {}
 
 void StatsAlgo::apply() {
 
-	for(Gg::Entity currentEntity: m_entitiesToApply) {
+	 for(Gg::Entity currentEntity: m_entitiesToApply) {
 
 		std::shared_ptr<Gg::Component::Float> hunger{ 
 			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Hunger"))
@@ -38,10 +46,37 @@ void StatsAlgo::apply() {
 			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Death"))
 		};
 
+		std::shared_ptr<Gg::Component::Float> hungerDecrease{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "HungerDecrease"))
+		};
+
+		std::shared_ptr<Gg::Component::Float> thirstDecrease{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "ThirstDecrease"))
+		};
+
+		std::shared_ptr<Gg::Component::Float> reproductionDecrease{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "ReproductionDecrease"))
+		};
+
+		std::shared_ptr<Gg::Component::Float> deathDecrease{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "DeathDecrease"))
+		};
+
+		std::shared_ptr<Gg::Component::Float> maxSpeed{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "MaxSpeed"))
+		};
+
+
+		d_hunger << currentEntity << " " << hungerDecrease << std::endl;
+		d_thirst << currentEntity << " " << thirstDecrease << std::endl;
+		d_reproduction << currentEntity << " " << reproductionDecrease << std::endl;
+		d_death << currentEntity << " " << deathDecrease << std::endl;
+		m_speed << currentEntity << " " << maxSpeed << std::endl;
 		
+
 	}
 
-	file << nbUpdates << " " << m_entitiesToApply.size() << std::endl;
+	nombre << nbUpdates << " " << m_entitiesToApply.size() << std::endl;
 
 	nbUpdates++;
 }

@@ -32,6 +32,44 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
+<<<<<<< HEAD
+=======
+	if(argc == 1) {
+
+		startWithWindow(15, 15, 15, 200);
+		system("gnuplot ./Stats/script_gnuplot.txt" );
+	}
+
+	else {
+
+		std::string argument{argv[1]};
+		if(argument == "-n") {
+
+			std::string nbUpdateMax{argv[2]};
+			startWithoutWindow(15, 15, 15, 500, static_cast<unsigned int>(std::stoi(nbUpdateMax)));
+
+
+		}
+
+		else { 
+
+			std::cout << "Unknown argument \"" << argument  << "\"."<< std::endl; 
+			return -1;
+		}
+	}
+
+	return 0;
+}
+
+void startWithWindow(const unsigned int nbAnimal, const unsigned int nbGrass, const unsigned int nbWater, const unsigned int nbUpdatePerSecond) {
+
+
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
+
+	sf::RenderWindow window{sf::VideoMode{800, 800}, "Sociétés virtuelles", sf::Style::Default, settings};
+
+>>>>>>> b90141885fcc588c8a060331afe3494afb9357d0
 	Gg::GulgEngine engine;
 
 	const unsigned int nbAnimal{30}, nbGrass{15}, nbWater{15};
