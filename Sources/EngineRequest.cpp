@@ -1,4 +1,5 @@
 #include "EngineRequest.hpp"
+#include "Components/FSM.hpp" //Inclusion cyclique
 
 EngineRequest::EngineRequest(Gg::GulgEngine &gulgEngine):
 	m_engine{gulgEngine} {}
@@ -129,4 +130,68 @@ float EngineRequest::entityHitboxSize(const Gg::Entity agent) {
 	if(entityType->value == 0) { return std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(agent, "MaxSpeed"))->value; }
 	else { return 2.f; }
 
+}
+
+float EngineRequest::getFitness(const Gg::Entity agent) {
+
+
+	std::shared_ptr<Gg::Component::UnsignedInt> entityType{ 
+		std::static_pointer_cast<Gg::Component::UnsignedInt>(m_engine.getComponent(agent, "AgentType"))
+	};
+
+	if(entityType->value != 0) { return 0.f; }
+
+	std::shared_ptr<Gg::Component::Float> hunger{ 
+		std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(agent, "Hunger"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> thirst{ 
+		std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(agent, "Thirst"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> reproduction{ 
+		std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(agent, "Reproduction"))
+	};
+
+
+	std::shared_ptr<Gg::Component::Float> hungerFitness{ 
+		std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(agent, "HungerFitness"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> thirstFitness{ 
+		std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(agent, "ThirstFitness"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> reproductionFitness{ 
+		std::static_pointer_cast<Gg::Component::Float>(m_engine.getComponent(agent, "ReproductionFitness"))
+	};
+
+
+	return hungerFitness->value*hunger->value + thirstFitness->value*thirst->value + reproductionFitness->value*reproduction->value;
+}
+
+
+float EngineRequest::getFitnessWithChoice(const Gg::Entity agent, const unsigned int choice) {
+
+	std::shared_ptr<Gg::Component::UnsignedInt> entityType{ 
+		std::static_pointer_cast<Gg::Component::UnsignedInt>(m_engine.getComponent(agent, "AgentType"))
+	};
+
+	if(entityType->value != 0) { return 0.f; }
+
+
+	Gg::Entity clone{m_engine.cloneEntity(agent)}; 
+
+
+	std::shared_ptr<FSM> fsm{ 
+		std::static_pointer_cast<FSM>(m_engine.getComponent(agent, "FSM"))
+	};
+
+	fsm->getModeSimulate(choice)(clone, m_engine);
+
+	float fitnessResult{getFitness(clone)};
+
+	m_engine.deleteEntity(clone);
+
+	return fitnessResult;
 }

@@ -67,6 +67,22 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 
 
 
+
+
+
+	std::shared_ptr<Gg::Component::Float> hungerFitness{std::make_shared<Gg::Component::Float>(1)};
+	engine.addComponentToEntity(newEntity, "HungerFitness", std::static_pointer_cast<Gg::Component::AbstractComponent>(hungerFitness));
+
+
+	std::shared_ptr<Gg::Component::Float> thirstFitness{std::make_shared<Gg::Component::Float>(1)};
+	engine.addComponentToEntity(newEntity, "ThirstFitness", std::static_pointer_cast<Gg::Component::AbstractComponent>(thirstFitness));
+
+
+	std::shared_ptr<Gg::Component::Float> reproductionFitness{std::make_shared<Gg::Component::Float>(1)};
+	engine.addComponentToEntity(newEntity, "ReproductionFitness", std::static_pointer_cast<Gg::Component::AbstractComponent>(reproductionFitness));
+
+
+
 	Node eatBegin{};
 	eatBegin.nextState = [](Gg::Entity myself, EngineRequest &request) {
 
@@ -131,6 +147,14 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	eatMode.addNode(searchForFood);
 	eatMode.addNode(goToFood);
 	eatMode.addNode(eating);
+	eatMode.simulate = [](Gg::Entity agent, Gg::GulgEngine &engine) {
+
+		std::shared_ptr<Gg::Component::Float> hunger{ 
+			std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(agent, "Hunger"))
+		};
+
+		hunger->value = 100.f;
+	};
 
 
 
@@ -198,6 +222,14 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	drinkMode.addNode(searchForWater);
 	drinkMode.addNode(goToWater);
 	drinkMode.addNode(drinking);
+	drinkMode.simulate = [](Gg::Entity agent, Gg::GulgEngine &engine) {
+
+		std::shared_ptr<Gg::Component::Float> thirst{ 
+			std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(agent, "Thirst"))
+		};
+
+		thirst->value = 100.f;
+	};
 
 
 
@@ -289,6 +321,14 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	reproductionMode.addNode(searchForPartner);
 	reproductionMode.addNode(goToPartner);
 	reproductionMode.addNode(reproduce);
+	reproductionMode.simulate = [](Gg::Entity agent, Gg::GulgEngine &engine) {
+
+		std::shared_ptr<Gg::Component::Float> reproduce{ 
+			std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(agent, "Reproduction"))
+		};
+
+		reproduce->value = 100.f;
+	};
 
 
 	Node randomMove{};
@@ -302,8 +342,11 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 		return currentChoice;
 	};
 
+
+
 	Mode randomMoveMode{0};
 	randomMoveMode.addNode(randomMoveNode);
+	randomMoveMode.simulate = [](Gg::Entity agent, Gg::GulgEngine &engine) {};
 
 
 	std::shared_ptr<FSM> fsm{std::make_shared<FSM>()};
@@ -311,6 +354,38 @@ Gg::Entity generateRandomSpecies(Gg::GulgEngine &engine) {
 	fsm->addMode(drinkMode);
 	fsm->addMode(reproductionMode);
 	fsm->addMode(randomMoveMode);
+	/*fsm->selectMode = [](Gg::Entity myself, EngineRequest &request) {
+
+		if(request.isUnderHungerThreshold(myself)) { return 0; }
+		else if(request.isUnderThirstThreshold(myself)) { return 1; }
+		else if(request.canReproduce(myself)) { return 2; }
+		return 3;
+	};*/
+
+	fsm->selectMode = [](Gg::Entity myself, EngineRequest &request) {
+
+		std::vector<float> fitnessResult;
+		fitnessResult.resize(4);
+		for(unsigned int i{0}; i < 4; i++) { fitnessResult[i] = request.getFitnessWithChoice(myself, i); }
+
+		float bestFitness{0.f};
+		unsigned int selectedMode{0};
+
+		for(unsigned int i{0}; i < 4; i++) {
+
+			if(fitnessResult[i] > bestFitness) {
+
+				bestFitness = fitnessResult[i];
+				selectedMode = i;
+			}
+
+		}
+
+
+		return selectedMode;
+	};
+
+
 	engine.addComponentToEntity(newEntity, "FSM", std::static_pointer_cast<Gg::Component::AbstractComponent>(fsm));
 
 
@@ -528,20 +603,89 @@ Gg::Entity reproduction(Gg::GulgEngine &engine, const Gg::Entity animal1, const 
 
 
 
+
+
+
+
+
+
+
+
+
+	std::shared_ptr<Gg::Component::Float> hungerFitnessNew{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "HungerFitness"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> hungerFitness1{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal1, "HungerFitness"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> hungerFitness2{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal2, "HungerFitness"))
+	};
+
+	if(chooseLegacy(randomEngine) == 1) { hungerFitnessNew->value = hungerFitness1->value; }
+	else { hungerFitnessNew->value = hungerFitness2->value; }
+
+	if(spontaneousMutationChance(randomEngine) <= 0.15f) { hungerFitnessNew->value *= spontaneousMutationRatio(randomEngine); }
+
+
+
+	std::shared_ptr<Gg::Component::Float> thirstFitnessNew{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "ThirstFitness"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> thirstFitness1{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal1, "ThirstFitness"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> thirstFitness2{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal2, "ThirstFitness"))
+	};
+
+	if(chooseLegacy(randomEngine) == 1) { thirstFitnessNew->value = thirstFitness1->value; }
+	else { thirstFitnessNew->value = thirstFitness2->value; }
+
+	if(spontaneousMutationChance(randomEngine) <= 0.15f) { thirstFitnessNew->value *= spontaneousMutationRatio(randomEngine); }
+
+
+
+
+
+
+
+
+
+
+
+
+	std::shared_ptr<Gg::Component::Float> reproductionFitnessNew{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(newAnimal, "ReproductionFitness"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> reproductionFitness1{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal1, "ReproductionFitness"))
+	};
+
+	std::shared_ptr<Gg::Component::Float> reproductionFitness2{ 
+		std::static_pointer_cast<Gg::Component::Float>(engine.getComponent(animal2, "ReproductionFitness"))
+	};
+
+	if(chooseLegacy(randomEngine) == 1) { reproductionFitnessNew->value = reproductionFitness1->value; }
+	else { reproductionFitnessNew->value = reproductionFitness2->value; }
+
+	if(spontaneousMutationChance(randomEngine) <= 0.15f) { reproductionFitnessNew->value *= spontaneousMutationRatio(randomEngine); }
+
+
+
+
+
+
+
+	
+
+
+
+
 	return newAnimal;
 }
-
-/*
-std::shared_ptr<Gg::Component::Float> maxSpeed{std::make_shared<Gg::Component::Float>(5.f)};
-	engine.addComponentToEntity(newEntity, "MaxSpeed", std::static_pointer_cast<Gg::Component::AbstractComponent>(maxSpeed));
-
-
-std::shared_ptr<Gg::Component::Float> viewRadius{std::make_shared<Gg::Component::Float>(100.f)};
-	engine.addComponentToEntity(newEntity, "ViewRadius", std::static_pointer_cast<Gg::Component::AbstractComponent>(viewRadius));
-
-
-
-
-
-
-*/

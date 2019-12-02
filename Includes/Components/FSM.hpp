@@ -39,6 +39,8 @@ struct Mode {
 			return m_nodes[m_currentNode].getAction(myself, request);
 		}
 
+		std::function<void(Gg::Entity, Gg::GulgEngine &engine)> simulate;
+
 	private:
 
 		const unsigned int m_beginNode;
@@ -55,17 +57,10 @@ struct FSM: public Gg::Component::AbstractComponent {
 		FSM(const FSM &fsmComponent):
 			m_currentMode{fsmComponent.m_currentMode},
 			m_oldMode{fsmComponent.m_oldMode},
-			m_modes{fsmComponent.m_modes} {}
+			m_modes{fsmComponent.m_modes},
+			selectMode{fsmComponent.selectMode} {}
 
 		virtual std::shared_ptr<AbstractComponent> clone() const { return std::static_pointer_cast<AbstractComponent>(std::make_shared<FSM>(*this)); }         
-
-		unsigned int selectMode(Gg::Entity myself, EngineRequest &request) { 
-
-			if(request.isUnderHungerThreshold(myself)) { return 0; }
-			else if(request.isUnderThirstThreshold(myself)) { return 1; }
-			else if(request.canReproduce(myself)) { return 2; }
-			return 3;
-		}
 
 		void addMode(Mode newMode) { m_modes.emplace_back(newMode); }
 
@@ -77,9 +72,15 @@ struct FSM: public Gg::Component::AbstractComponent {
 			return m_modes[m_currentMode].moveForward(myself, request);
 		}
 
+		std::function<void(Gg::Entity, Gg::GulgEngine &engine)> getModeSimulate(const unsigned int i) { return m_modes[i].simulate; }
+
+
+		std::function<unsigned int(Gg::Entity, EngineRequest&)> selectMode;
+
 	private:
 
 		unsigned int m_currentMode, m_oldMode;
+
 
 		std::vector<Mode> m_modes;
 };

@@ -6,6 +6,8 @@
 
 #include "Mathematics/Basics.hpp"
 
+struct FSM;
+
 class EngineRequest {
 
 	public:
@@ -23,6 +25,10 @@ class EngineRequest {
 		bool canReproduce(const Gg::Entity agent);
 
 		float entityHitboxSize(const Gg::Entity agent);
+
+		float getFitness(const Gg::Entity agent);
+
+		float getFitnessWithChoice(const Gg::Entity agent, const unsigned int choice);
 
 	protected:
 
