@@ -23,6 +23,9 @@ class StatsAlgo: public Gg::Algorithm::AbstractAlgorithm {
 	protected:
 
 		unsigned int nbUpdates;
+		float moy_hunger;
+		float moy_thirst;
+		float moy_repro;
 		std::ofstream file;
 		std::ofstream nombre;
 		std::ofstream d_hunger;
@@ -31,7 +34,9 @@ class StatsAlgo: public Gg::Algorithm::AbstractAlgorithm {
 		std::ofstream d_death;
 		std::ofstream d_reproduction;
 		std::ofstream m_speed;
-		std::ofstream choice;
+		std::ofstream m_repro;
+		std::ofstream m_hunger;
+		std::ofstream m_thirst;
 
 };
 

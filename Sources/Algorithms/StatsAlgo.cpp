@@ -6,6 +6,10 @@
 StatsAlgo::StatsAlgo(Gg::GulgEngine &gulgEngine, const std::string folderPath): 
 	AbstractAlgorithm{gulgEngine},
 	nbUpdates{0},
+	moy_hunger{0.},
+	moy_thirst{0.},
+	moy_repro{0.},
+
 	nombre{"./Stats/nombre.txt"},
 	d_hunger{"./Stats/d_hunger.txt"},
 	d_thirst{"./Stats/d_thirst.txt"},
@@ -13,7 +17,9 @@ StatsAlgo::StatsAlgo(Gg::GulgEngine &gulgEngine, const std::string folderPath):
 	d_death{"./Stats/d_death.txt"},
 	d_reproduction{"./Stats/d_reproduction.txt"},
 	m_speed{"./Stats/m_speed.txt"},
-	choice{"./Stats/choice.txt"} {
+	m_repro{"./Stats/repro.txt"},
+	m_hunger{"./Stats/hunger.txt"},
+	m_thirst{"./Stats/thirst.txt"} {
 
 	m_signature = gulgEngine.getComponentSignature("AgentType");
 	m_signature += gulgEngine.getComponentSignature("Hunger");
@@ -32,6 +38,8 @@ StatsAlgo::~StatsAlgo() {}
 
 void StatsAlgo::apply() {
 	int nb_mort = 0;
+	int c_thirst = 0, c_hunger=0, c_dead=0;
+	moy_hunger = 0.; moy_thirst = 0.; moy_repro = 0.;
 	d_hunger << nbUpdates << " ";
 	d_thirst << nbUpdates << " " ;
 	d_reproduction << nbUpdates << " " ;
@@ -74,24 +82,63 @@ void StatsAlgo::apply() {
 			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "MaxSpeed"))
 		};
 
+		std::shared_ptr<Gg::Component::Float> hungerFitness{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "HungerFitness"))
+		};
+
+		std::shared_ptr<Gg::Component::Float> thirstFitness{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "ThirstFitness"))
+		};
+
+		std::shared_ptr<Gg::Component::Float> reproductionFitness{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "ReproductionFitness"))
+		};
+
 
 		d_hunger << hunger->value << " ";
 		d_thirst << thirst->value << " ";
 		d_reproduction << reproduction->value << " ";
 		if(death->value <= 2) {
-			nb_mort++;
+			nb_mort++; c_dead++;
 		}
-		/*m_speed << currentEntity << " " << maxSpeed->value << std::endl;*/
+		if(hunger->value <= 2) {
+			c_hunger++;
+		}
+		if(thirst->value <=2) {
+			c_hunger++;
+		}
+		moy_hunger += hungerFitness->value;
+		moy_thirst += thirstFitness->value;
+		moy_repro += reproductionFitness->value;
 		
 
 	}
-	d_hunger << std::endl;
+	moy_repro = moy_repro / (float)m_entitiesToApply.size();
+	moy_hunger = moy_hunger / (float)m_entitiesToApply.size();
+	moy_thirst = moy_thirst / (float)m_entitiesToApply.size();
+
+	dead << nbUpdates << " " << c_dead << " " << c_hunger<< " " << c_thirst << std::endl;
 	d_hunger << std::endl;
 	d_thirst << std::endl;
 	d_reproduction << std::endl;
 	d_death << nbUpdates << " " << nb_mort << std::endl;
+	m_repro << nbUpdates << " " << moy_repro << std::endl;
+	m_hunger << nbUpdates << " " << moy_hunger << std::endl;
+	m_thirst << nbUpdates << " " << moy_thirst << std::endl;
 
 	nombre << nbUpdates << " " << m_entitiesToApply.size() << std::endl;
 
 	nbUpdates++;
+
+	d_thirst.flush();
+	nombre.flush();
+		d_hunger.flush();
+		dead.flush();
+		d_death.flush();
+	 d_reproduction.flush();
+		m_speed.flush();
+	 m_repro.flush();
+		m_hunger.flush();
+	 m_thirst.flush();
+
 }

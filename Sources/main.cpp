@@ -90,9 +90,9 @@ int main(int argc, char* argv[]) {
 				Gg::GulgEngine secondEngine{engine};
 				std::vector<Gg::Entity> secondAnimals{allAnimals};
 
-				startWithoutWindow(secondEngine, secondAnimals, static_cast<unsigned int>(std::stoi(nbUpdateMax)), "Stats/NoWindow1");
+				startWithoutWindow(secondEngine, secondAnimals, static_cast<unsigned int>(std::stoi(nbUpdateMax)), "Stats/Folder1");
 
-				startWithoutWindow(engine, allAnimals, static_cast<unsigned int>(std::stoi(nbUpdateMax)), "Stats/NoWindow2");
+				startWithoutWindow(engine, allAnimals, static_cast<unsigned int>(std::stoi(nbUpdateMax)), "Stats/Folder2");
 
 
 			}
