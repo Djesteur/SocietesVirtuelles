@@ -4,7 +4,20 @@ set grid
 set ylabel "Nombre individus"
 set xlabel "Temps"
 plot "./Stats/nombre.txt" using 1:2 with lines
+
 set output "./Stats/d_hunger.png"
-set ylabel "Hunger Decrease"
-set xlabel "Temps"
-plot "./Stats/d_hunger.txt" using 1:2 with lines
+set ylabel "Hunger"
+plot for [i=2:7] "./Stats/d_hunger.txt" every 50 using 1:i+1 with lines 
+
+set output "./Stats/d_thirst.png"
+set ylabel "Thirst"
+plot for [i=2:7] "./Stats/d_thirst.txt" every 50 using 1:i+1 with lines 
+
+set output "./Stats/d_death.png"
+set ylabel "Death"
+plot "./Stats/d_death.txt" using 1:2 with lines 
+
+set output "./Stats/d_reproduction.png"
+set ylabel "Reproduction"
+plot for [i=2:7] "./Stats/d_reproduction.txt" every 50 using 1:i+1 with lines
+

@@ -31,6 +31,10 @@ StatsAlgo::~StatsAlgo() {}
 
 
 void StatsAlgo::apply() {
+	int nb_mort = 0;
+	d_hunger << nbUpdates << " ";
+	d_thirst << nbUpdates << " " ;
+	d_reproduction << nbUpdates << " " ;
 
 	 for(Gg::Entity currentEntity: m_entitiesToApply) {
 
@@ -58,6 +62,10 @@ void StatsAlgo::apply() {
 			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "ReproductionDecrease"))
 		};
 
+		std::shared_ptr<Gg::Component::Float> reproduction{ 
+			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "Reproduction"))
+		};
+
 		std::shared_ptr<Gg::Component::Float> deathDecrease{ 
 			std::static_pointer_cast<Gg::Component::Float>(m_gulgEngine.getComponent(currentEntity, "DeathDecrease"))
 		};
@@ -67,14 +75,21 @@ void StatsAlgo::apply() {
 		};
 
 
-		d_hunger << currentEntity << " " << hungerDecrease << std::endl;
-		d_thirst << currentEntity << " " << thirstDecrease << std::endl;
-		d_reproduction << currentEntity << " " << reproductionDecrease << std::endl;
-		d_death << currentEntity << " " << deathDecrease << std::endl;
-		m_speed << currentEntity << " " << maxSpeed << std::endl;
+		d_hunger << hunger->value << " ";
+		d_thirst << thirst->value << " ";
+		d_reproduction << reproduction->value << " ";
+		if(death->value <= 2) {
+			nb_mort++;
+		}
+		/*m_speed << currentEntity << " " << maxSpeed->value << std::endl;*/
 		
 
 	}
+	d_hunger << std::endl;
+	d_hunger << std::endl;
+	d_thirst << std::endl;
+	d_reproduction << std::endl;
+	d_death << nbUpdates << " " << nb_mort << std::endl;
 
 	nombre << nbUpdates << " " << m_entitiesToApply.size() << std::endl;
 
