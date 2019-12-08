@@ -16,7 +16,6 @@
 #include "AnimalCreation.hpp"
 
 
-
 void startWithWindow(Gg::GulgEngine &engine, std::vector<Gg::Entity> animals, std::vector<Gg::Entity> ressources, 
 					 const unsigned int nbUpdatePerSecond, std::string statsFolderPath);
 

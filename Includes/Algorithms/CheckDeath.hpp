@@ -23,8 +23,6 @@ class CheckDeath: public Gg::Algorithm::AbstractAlgorithm {
 		bool opened = false;
 		std::vector<Gg::Entity> &m_entitiesToKill;
 		std::ofstream monFlux;
-		//std::ofstream monFlux{ "./Stats/nombre.txt" };
-		//FILE* fichier;  = fopen("./Stats/nombre.txt", "w+");
 
 };
 
