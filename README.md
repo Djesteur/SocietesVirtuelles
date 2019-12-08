@@ -10,3 +10,8 @@ Code:
 
 	EngineRequest.cpp:
 		Répond au requêtes des systèmes (interface multi-agent)
+
+Options du programme: 
+
+	-n XXX
+	Lance la simulation sans la fênetre jusqu'à atteindre XXX tics

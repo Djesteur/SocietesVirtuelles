@@ -1,6 +1,6 @@
 CXX      = g++
-CXXFLAGS = -g -std=c++17 -Wextra -Wall -pedantic -O3
-LDFLAGS  = -L ./Libraries/SFML/lib -lsfml-system -lsfml-window -lsfml-graphics
+CXXFLAGS = -std=c++17 -Wextra -Wall -pedantic -O3
+LDFLAGS  = -L ./Libraries -lsfml-system -lsfml-window -lsfml-graphics
 
 SRCFILE = Sources
 INCFILE = Includes
@@ -9,7 +9,7 @@ EXEFILE = .
 
 DIRECTORIES = $(subst $(SRCFILE),$(OBJFILE),$(shell find $(SRCFILE) -type d))
 
-EXENAME = test
+EXENAME = Simulation
 SRC     = $(wildcard $(SRCFILE)/*.cpp) $(wildcard $(SRCFILE)/**/*.cpp) $(wildcard $(SRCFILE)/**/**/*.cpp)
 OBJ     = $(SRC:$(SRCFILE)/%.cpp=$(OBJFILE)/%.o)
 
