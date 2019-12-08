@@ -1,6 +1,12 @@
 # SocietesVirtuelles
 
-- Ajout de la reproduction des espèces
-- Les faire mourir
-- Choisir les gênes à implémenter
-- Implémenter comment la transmission des gênes se fait
+Code:
+	
+	Entité-Composants-Systèmes
+					 -> Chaque système est subdivisé en Algorithmes
+
+	AnimalCreation.cpp: 
+		Créé les agents du début de la simulation et leur donne les composants nécessaires au bon fonctionnement du programme.
+
+	EngineRequest.cpp:
+		Répond au requêtes des systèmes (interface multi-agent)
